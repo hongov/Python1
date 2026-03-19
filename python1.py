@@ -343,3 +343,207 @@ def ejemplo_orden_grupo():
     })
     print(df2.groupby("estacion")["concentracion"].mean())
     print(df2.groupby("estacion")["concentracion"].sum())
+
+def E():
+    Et = float(input("Ingrese la energía total del sistema en Joules"))
+    # Tipos de energía
+    tipos = np.array(["Cinética ", "Potencial", "Térmica  "])
+
+    # Porcentajes de cada tipo de energía
+    porcentajes = np.array([0.40, 0.30, 0.30])
+
+    # Cálculo de energías usando NumPy
+    energias = Et * porcentajes
+
+    print("\nDistribución de Energía del Sistema")
+    print("-" * 45)
+    print(f"{'Tipo de energía     '}{'Porcentaje      '}{'Energía (J)      '}")
+    print("-" * 45)
+
+    for i in range(len(tipos)):
+        print(f"{tipos[i]}             {porcentajes[i]*100}%         {energias[i]}")
+
+    print("-" * 45)
+
+
+
+E()
+
+
+
+def bytes():
+    pot = range(31)
+
+    for i in (pot):
+        val = 2**i
+        if i//10 == 0:
+            print(f"2^{i} = {val} bytes = {val:.3g} bytes")
+        elif i//10 == 1:
+            print(f"2^{i} = {val} bytes = {(val/1000):.3g} kilobytes")
+        elif i//10 == 2:
+            print(f"2^{i} = {val} bytes = {(val/1000000):.3g} megabytes")
+        elif i//10 == 3:
+            print(f"2^{i} = {val} bytes = {(val/1000000000):.3g} gigabytes")
+        else:
+            print(f"2^{i} = {val} bytes = {(val/1000000000000):.1g} terabytes")
+        
+
+
+
+bytes()
+
+
+
+M = 5.972*(10**24) #[kg]
+r = 6.771 *(10**6) #[m]
+
+
+v0 = 7500.0
+tol = 1e-12
+maxit = 200
+
+#def g(v):
+ #   return np.sqrt((G*M/r) * (1/np.sqrt(1 + (v/c)**2)))
+
+
+v = v0
+hist = [v]
+
+for n in range(maxit):
+
+    gv = np.sqrt((G*M/r) * (1/np.sqrt(1 + (v/c)**2)))
+    
+    v_new = gv
+    hist.append(v_new)
+
+    err = abs(v_new - v)/(abs(v) + 1e-15)
+
+    if err < tol:
+        print(f"Convergió en {n+1} iteraciones")
+        break
+
+    v = v_new
+
+print("Velocidad orbital aproximada:", v_new, "m/s")
+
+hist = np.array(hist)
+
+print(hist)
+
+plt.plot(hist, marker='o')
+plt.xlabel("Iteración n")
+plt.ylabel("v_n (m/s)")
+plt.title("Convergencia del método de punto fijo")
+plt.grid()
+plt.show()
+
+
+
+
+alpha = 0.6     # coeficiente de absorción
+S = 2.0         # fuente constante
+I0 = 50.0       # intensidad inicial en z=0
+
+z0 = 0.0
+z_end = 10.0
+h = 0.5
+
+# malla
+z = np.arange(z0, z_end + h, h)
+
+
+I = np.zeros(len(z))
+
+# Condición inicial
+I[0] = I0
+
+# Método de Euler explícito
+for i in range(len(z) - 1):
+    I[i+1] = I[i] + h * (-alpha * I[i] + S)
+
+print(f" z  --   I")
+print("="*15)
+# Imprimir resultados
+for i in range(len(z)):
+    print(f"{z[i]} -- {I[i]:.5}")
+
+
+
+
+
+
+for i in range(1, 101):
+    print(f"{i:3}", end=" ")
+    
+    # Salto de línea cada 10 números
+    if i % 10 == 0:
+        print()
+
+print("\nFin del experimento")
+
+
+
+
+
+
+
+def pit():
+    num = range(100)
+    #print(num)
+    a = float(input("Escriba el valor de a:"))
+    b = float(input("Escriba el valor de b:"))
+    c = float(input("Escriba el valor de c:"))
+
+    if a**2 + (b**2) == (c**2):
+        print("Sí cumple")
+    elif a**2 + (c**2) == (b**2):
+        print("Sí cumple")
+    elif c**2 + (b**2) == (a**2):
+        print("Sí cumple")
+    else:
+        print("No cumple")
+
+    contador = 0
+    for a in range(1, 100):
+        for b in range(a, 100):
+            for c in range(b, 100):
+                if a**2 + (b**2) == c**2:
+                    print(a, b, c)
+                    contador += 1
+    print(f"son {contador}")
+
+    
+pit()
+
+
+
+def buscar_palabra():
+    # Solicitar datos
+    palabra = input("Ingrese la palabra clave: ").lower()
+    archivo = input("Ingrese el nombre del archivo: ")
+
+    try:
+        # Abrir y leer archivo
+        with open(archivo, "r", encoding="utf-8") as f:
+            texto = f.read()
+
+        # Convertir texto a minúsculas
+        texto = texto.lower()
+
+        # Convertir a arreglo de palabras con NumPy
+        palabras = np.array(texto.split())
+
+        # Buscar la palabra
+        if np.any(palabras == palabra):
+            print("La palabra SÍ se encuentra en el archivo.")
+        else:
+            print("La palabra NO se encuentra en el archivo.")
+
+    except FileNotFoundError:
+        print("Error: el archivo no existe.")
+
+buscar_palabra()
+
+
+
+
