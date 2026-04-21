@@ -20,6 +20,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -54,6 +55,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -90,6 +92,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -128,6 +131,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -165,6 +169,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -207,6 +212,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -246,6 +252,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -291,6 +298,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -334,6 +342,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -377,6 +386,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -418,6 +428,7 @@ from sklearn.metrics import accuracy_score, log_loss
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -432,17 +443,20 @@ print(f"  Cross-entropy = {log_loss(y_test, y_proba):.4f}")
 frontera = -modelo.intercept_[0] / modelo.coef_[0][0]
 print(f"  Frontera analítica: X = {frontera:.4f}")
 
-x_rng = np.linspace(X.min() - 0.01, X.max() + 0.01, 400).reshape(-1, 1)
-proba = modelo.predict_proba(x_rng)[:, 1]
+x_rng   = np.linspace(X.min() - 0.01, X.max() + 0.01, 400).reshape(-1, 1)
+proba   = modelo.predict_proba(x_rng)[:, 1]
+cambios = np.where(np.diff(modelo.predict(x_rng)))[0]
+fronteras = [x_rng[i, 0] for i in cambios]
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 for clase in np.unique(y):
     m = y.ravel() == clase
-    ax1.scatter(X[m], y[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
-ax1.set_xlabel("X"); ax1.set_ylabel("y"); ax1.set_title("Figura 1 – Datos por clase")
+    ax1.scatter(X[m], y_scatter[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
+ax1.set_xlabel("X"); ax1.set_ylabel("y_scatter"); ax1.set_title("Figura 1 – Datos por clase")
 ax1.legend(); ax1.grid(True, alpha=0.35)
 ax2.plot(x_rng, proba, color="purple", lw=2.5, label="P(clase=1|X)")
-ax2.axvline(frontera, color="black", ls="--", lw=1.5, label=f"Frontera = {frontera:.3f}")
+for f in fronteras:
+    ax2.axvline(f, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {f:.3f}")
 ax2.axhline(0.5, color="gray", ls=":", lw=1)
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba >= 0.5), alpha=0.12, color="orangered")
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba <  0.5), alpha=0.12, color="steelblue")
@@ -462,6 +476,7 @@ from sklearn.metrics import accuracy_score, log_loss
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -479,18 +494,17 @@ y_proba = mejor_modelo.predict_proba(X_test)
 print(f"  → Mejor depth: {mejor_prof} | Accuracy={accuracy_score(y_test,y_pred):.4f} | Cross-entropy={log_loss(y_test,y_proba):.4f}")
 x_rng   = np.linspace(X.min() - 0.01, X.max() + 0.01, 400).reshape(-1, 1)
 proba   = mejor_modelo.predict_proba(x_rng)[:, 1]
-cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
-frontera = x_rng[cambios[0], 0] if len(cambios) > 0 else None
-
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 for clase in np.unique(y):
     m = y.ravel() == clase
-    ax1.scatter(X[m], y[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
-ax1.set_xlabel("X"); ax1.set_ylabel("y"); ax1.set_title("Figura 1 – Datos por clase")
+    ax1.scatter(X[m], y_scatter[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
+ax1.set_xlabel("X"); ax1.set_ylabel("y_scatter"); ax1.set_title("Figura 1 – Datos por clase")
 ax1.legend(); ax1.grid(True, alpha=0.35)
 ax2.plot(x_rng, proba, color="forestgreen", lw=2.5, label="P(clase=1|X)")
-if frontera is not None:
-    ax2.axvline(frontera, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {frontera:.3f}")
+cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
+fronteras = [x_rng[i, 0] for i in cambios]
+for f in fronteras:
+    ax2.axvline(f, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {f:.3f}")
 ax2.axhline(0.5, color="gray", ls=":", lw=1)
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba >= 0.5), alpha=0.12, color="orangered")
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba <  0.5), alpha=0.12, color="steelblue")
@@ -512,6 +526,7 @@ from sklearn.metrics import accuracy_score, log_loss
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -529,18 +544,17 @@ y_proba = mejor_modelo.predict_proba(X_test)
 print(f"  → Mejor k: {mejor_k} | Accuracy={accuracy_score(y_test,y_pred):.4f} | Cross-entropy={log_loss(y_test,y_proba):.4f}")
 x_rng   = np.linspace(X.min() - 0.01, X.max() + 0.01, 400).reshape(-1, 1)
 proba   = mejor_modelo.predict_proba(x_rng)[:, 1]
-cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
-frontera = x_rng[cambios[0], 0] if len(cambios) > 0 else None
-
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 for clase in np.unique(y):
     m = y.ravel() == clase
-    ax1.scatter(X[m], y[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
-ax1.set_xlabel("X"); ax1.set_ylabel("y"); ax1.set_title("Figura 1 – Datos por clase")
+    ax1.scatter(X[m], y_scatter[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
+ax1.set_xlabel("X"); ax1.set_ylabel("y_scatter"); ax1.set_title("Figura 1 – Datos por clase")
 ax1.legend(); ax1.grid(True, alpha=0.35)
 ax2.plot(x_rng, proba, color="darkorchid", lw=2.5, label="P(clase=1|X)")
-if frontera is not None:
-    ax2.axvline(frontera, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {frontera:.3f}")
+cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
+fronteras = [x_rng[i, 0] for i in cambios]
+for f in fronteras:
+    ax2.axvline(f, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {f:.3f}")
 ax2.axhline(0.5, color="gray", ls=":", lw=1)
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba >= 0.5), alpha=0.12, color="orangered")
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba <  0.5), alpha=0.12, color="steelblue")
@@ -564,6 +578,7 @@ from sklearn.metrics import accuracy_score, log_loss
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -583,18 +598,17 @@ y_proba = mejor_modelo.predict_proba(X_test)
 print(f"  → Mejor kernel: {mejor_kernel} | Accuracy={accuracy_score(y_test,y_pred):.4f} | Cross-entropy={log_loss(y_test,y_proba):.4f}")
 x_rng   = np.linspace(X.min() - 0.01, X.max() + 0.01, 400).reshape(-1, 1)
 proba   = mejor_modelo.predict_proba(x_rng)[:, 1]
-cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
-frontera = x_rng[cambios[0], 0] if len(cambios) > 0 else None
-
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 for clase in np.unique(y):
     m = y.ravel() == clase
-    ax1.scatter(X[m], y[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
-ax1.set_xlabel("X"); ax1.set_ylabel("y"); ax1.set_title("Figura 1 – Datos por clase")
+    ax1.scatter(X[m], y_scatter[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
+ax1.set_xlabel("X"); ax1.set_ylabel("y_scatter"); ax1.set_title("Figura 1 – Datos por clase")
 ax1.legend(); ax1.grid(True, alpha=0.35)
 ax2.plot(x_rng, proba, color="steelblue", lw=2.5, label="P(clase=1|X)")
-if frontera is not None:
-    ax2.axvline(frontera, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {frontera:.3f}")
+cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
+fronteras = [x_rng[i, 0] for i in cambios]
+for f in fronteras:
+    ax2.axvline(f, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {f:.3f}")
 ax2.axhline(0.5, color="gray", ls=":", lw=1)
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba >= 0.5), alpha=0.12, color="orangered")
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba <  0.5), alpha=0.12, color="steelblue")
@@ -616,6 +630,7 @@ from sklearn.metrics import accuracy_score, log_loss
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -633,18 +648,17 @@ y_proba = mejor_modelo.predict_proba(X_test)
 print(f"  → Mejor n: {mejor_n} | Accuracy={accuracy_score(y_test,y_pred):.4f} | Cross-entropy={log_loss(y_test,y_proba):.4f}")
 x_rng   = np.linspace(X.min() - 0.01, X.max() + 0.01, 400).reshape(-1, 1)
 proba   = mejor_modelo.predict_proba(x_rng)[:, 1]
-cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
-frontera = x_rng[cambios[0], 0] if len(cambios) > 0 else None
-
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 for clase in np.unique(y):
     m = y.ravel() == clase
-    ax1.scatter(X[m], y[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
-ax1.set_xlabel("X"); ax1.set_ylabel("y"); ax1.set_title("Figura 1 – Datos por clase")
+    ax1.scatter(X[m], y_scatter[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
+ax1.set_xlabel("X"); ax1.set_ylabel("y_scatter"); ax1.set_title("Figura 1 – Datos por clase")
 ax1.legend(); ax1.grid(True, alpha=0.35)
 ax2.plot(x_rng, proba, color="saddlebrown", lw=2.5, label="P(clase=1|X)")
-if frontera is not None:
-    ax2.axvline(frontera, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {frontera:.3f}")
+cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
+fronteras = [x_rng[i, 0] for i in cambios]
+for f in fronteras:
+    ax2.axvline(f, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {f:.3f}")
 ax2.axhline(0.5, color="gray", ls=":", lw=1)
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba >= 0.5), alpha=0.12, color="orangered")
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba <  0.5), alpha=0.12, color="steelblue")
@@ -666,6 +680,7 @@ from sklearn.metrics import accuracy_score, log_loss
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -683,18 +698,17 @@ y_proba = mejor_modelo.predict_proba(X_test)
 print(f"  → Mejor lr: {mejor_lr} | Accuracy={accuracy_score(y_test,y_pred):.4f} | Cross-entropy={log_loss(y_test,y_proba):.4f}")
 x_rng   = np.linspace(X.min() - 0.01, X.max() + 0.01, 400).reshape(-1, 1)
 proba   = mejor_modelo.predict_proba(x_rng)[:, 1]
-cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
-frontera = x_rng[cambios[0], 0] if len(cambios) > 0 else None
-
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 for clase in np.unique(y):
     m = y.ravel() == clase
-    ax1.scatter(X[m], y[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
-ax1.set_xlabel("X"); ax1.set_ylabel("y"); ax1.set_title("Figura 1 – Datos por clase")
+    ax1.scatter(X[m], y_scatter[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
+ax1.set_xlabel("X"); ax1.set_ylabel("y_scatter"); ax1.set_title("Figura 1 – Datos por clase")
 ax1.legend(); ax1.grid(True, alpha=0.35)
 ax2.plot(x_rng, proba, color="darkgreen", lw=2.5, label="P(clase=1|X)")
-if frontera is not None:
-    ax2.axvline(frontera, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {frontera:.3f}")
+cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
+fronteras = [x_rng[i, 0] for i in cambios]
+for f in fronteras:
+    ax2.axvline(f, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {f:.3f}")
 ax2.axhline(0.5, color="gray", ls=":", lw=1)
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba >= 0.5), alpha=0.12, color="orangered")
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba <  0.5), alpha=0.12, color="steelblue")
@@ -718,6 +732,7 @@ from sklearn.metrics import accuracy_score, log_loss
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -737,18 +752,17 @@ y_proba = mejor_modelo.predict_proba(X_test)
 print(f"  → Mejor arq: {mejor_arq} | Accuracy={accuracy_score(y_test,y_pred):.4f} | Cross-entropy={log_loss(y_test,y_proba):.4f}")
 x_rng   = np.linspace(X.min() - 0.01, X.max() + 0.01, 400).reshape(-1, 1)
 proba   = mejor_modelo.predict_proba(x_rng)[:, 1]
-cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
-frontera = x_rng[cambios[0], 0] if len(cambios) > 0 else None
-
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 for clase in np.unique(y):
     m = y.ravel() == clase
-    ax1.scatter(X[m], y[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
-ax1.set_xlabel("X"); ax1.set_ylabel("y"); ax1.set_title("Figura 1 – Datos por clase")
+    ax1.scatter(X[m], y_scatter[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
+ax1.set_xlabel("X"); ax1.set_ylabel("y_scatter"); ax1.set_title("Figura 1 – Datos por clase")
 ax1.legend(); ax1.grid(True, alpha=0.35)
 ax2.plot(x_rng, proba, color="tomato", lw=2.5, label="P(clase=1|X)  ReLU")
-if frontera is not None:
-    ax2.axvline(frontera, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {frontera:.3f}")
+cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
+fronteras = [x_rng[i, 0] for i in cambios]
+for f in fronteras:
+    ax2.axvline(f, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {f:.3f}")
 ax2.axhline(0.5, color="gray", ls=":", lw=1)
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba >= 0.5), alpha=0.12, color="orangered")
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba <  0.5), alpha=0.12, color="steelblue")
@@ -772,6 +786,7 @@ from sklearn.metrics import accuracy_score, log_loss
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -791,18 +806,17 @@ y_proba = mejor_modelo.predict_proba(X_test)
 print(f"  → Mejor arq: {mejor_arq} | Accuracy={accuracy_score(y_test,y_pred):.4f} | Cross-entropy={log_loss(y_test,y_proba):.4f}")
 x_rng   = np.linspace(X.min() - 0.01, X.max() + 0.01, 400).reshape(-1, 1)
 proba   = mejor_modelo.predict_proba(x_rng)[:, 1]
-cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
-frontera = x_rng[cambios[0], 0] if len(cambios) > 0 else None
-
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 for clase in np.unique(y):
     m = y.ravel() == clase
-    ax1.scatter(X[m], y[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
-ax1.set_xlabel("X"); ax1.set_ylabel("y"); ax1.set_title("Figura 1 – Datos por clase")
+    ax1.scatter(X[m], y_scatter[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
+ax1.set_xlabel("X"); ax1.set_ylabel("y_scatter"); ax1.set_title("Figura 1 – Datos por clase")
 ax1.legend(); ax1.grid(True, alpha=0.35)
 ax2.plot(x_rng, proba, color="mediumseagreen", lw=2.5, label="P(clase=1|X)  tanh")
-if frontera is not None:
-    ax2.axvline(frontera, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {frontera:.3f}")
+cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
+fronteras = [x_rng[i, 0] for i in cambios]
+for f in fronteras:
+    ax2.axvline(f, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {f:.3f}")
 ax2.axhline(0.5, color="gray", ls=":", lw=1)
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba >= 0.5), alpha=0.12, color="orangered")
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba <  0.5), alpha=0.12, color="steelblue")
@@ -826,6 +840,7 @@ from sklearn.metrics import accuracy_score, log_loss
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -845,18 +860,17 @@ y_proba = mejor_modelo.predict_proba(X_test)
 print(f"  → Mejor arq: {mejor_arq} | Accuracy={accuracy_score(y_test,y_pred):.4f} | Cross-entropy={log_loss(y_test,y_proba):.4f}")
 x_rng   = np.linspace(X.min() - 0.01, X.max() + 0.01, 400).reshape(-1, 1)
 proba   = mejor_modelo.predict_proba(x_rng)[:, 1]
-cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
-frontera = x_rng[cambios[0], 0] if len(cambios) > 0 else None
-
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 for clase in np.unique(y):
     m = y.ravel() == clase
-    ax1.scatter(X[m], y[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
-ax1.set_xlabel("X"); ax1.set_ylabel("y"); ax1.set_title("Figura 1 – Datos por clase")
+    ax1.scatter(X[m], y_scatter[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
+ax1.set_xlabel("X"); ax1.set_ylabel("y_scatter"); ax1.set_title("Figura 1 – Datos por clase")
 ax1.legend(); ax1.grid(True, alpha=0.35)
 ax2.plot(x_rng, proba, color="goldenrod", lw=2.5, label="P(clase=1|X)  sigmoid")
-if frontera is not None:
-    ax2.axvline(frontera, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {frontera:.3f}")
+cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
+fronteras = [x_rng[i, 0] for i in cambios]
+for f in fronteras:
+    ax2.axvline(f, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {f:.3f}")
 ax2.axhline(0.5, color="gray", ls=":", lw=1)
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba >= 0.5), alpha=0.12, color="orangered")
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba <  0.5), alpha=0.12, color="steelblue")
@@ -878,6 +892,7 @@ from sklearn.metrics import accuracy_score, log_loss
 df = pd.read_csv("")
 X = df[[""]].values
 y = df[""].values
+y_scatter = y  # <- cambiar por df["otra_columna"].values si querés otra variable en el eje Y del scatter
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
@@ -893,18 +908,17 @@ for i, clase in enumerate(modelo.classes_):
     print(f"  Clase {int(clase)}:  mu={modelo.theta_[i, 0]:.4f}  |  sigma2={modelo.var_[i, 0]:.6f}")
 x_rng   = np.linspace(X.min() - 0.01, X.max() + 0.01, 400).reshape(-1, 1)
 proba   = mejor_modelo.predict_proba(x_rng)[:, 1]
-cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
-frontera = x_rng[cambios[0], 0] if len(cambios) > 0 else None
-
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5))
 for clase in np.unique(y):
     m = y.ravel() == clase
-    ax1.scatter(X[m], y[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
-ax1.set_xlabel("X"); ax1.set_ylabel("y"); ax1.set_title("Figura 1 – Datos por clase")
+    ax1.scatter(X[m], y_scatter[m], alpha=0.7, s=45, label=f"Clase {int(clase)}")
+ax1.set_xlabel("X"); ax1.set_ylabel("y_scatter"); ax1.set_title("Figura 1 – Datos por clase")
 ax1.legend(); ax1.grid(True, alpha=0.35)
 ax2.plot(x_rng, proba, color="teal", lw=2.5, label="P(clase=1|X)")
-if frontera is not None:
-    ax2.axvline(frontera, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {frontera:.3f}")
+cambios = np.where(np.diff(mejor_modelo.predict(x_rng)))[0]
+fronteras = [x_rng[i, 0] for i in cambios]
+for f in fronteras:
+    ax2.axvline(f, color="black", ls="--", lw=1.5, label=f"Frontera ≈ {f:.3f}")
 ax2.axhline(0.5, color="gray", ls=":", lw=1)
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba >= 0.5), alpha=0.12, color="orangered")
 ax2.fill_between(x_rng.ravel(), proba, 0.5, where=(proba <  0.5), alpha=0.12, color="steelblue")
