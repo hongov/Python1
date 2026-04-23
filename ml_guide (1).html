@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine Learning Methods</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --border: #e8e5df;
+    --text: #1a1916;
+    --muted: #6b6860;
+    --accent: #2563eb;
+    --accent-light: #dbeafe;
+    --tag-reg: #064e3b;
+    --tag-reg-bg: #d1fae5;
+    --tag-clf: #1e3a5f;
+    --tag-clf-bg: #dbeafe;
+    --divider: #d1cfc9;
+    --code-bg: #0d1117;
+    --step-bg: #f4f3f0;
+    --highlight: #fffbeb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+  /* ── Layout ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  nav {
+    width: 240px;
+    min-width: 240px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    font-size: 13px;
+  }
+
+  nav .logo {
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  nav .logo span { color: var(--muted); font-weight: 400; font-style: italic; font-size: 12px; display: block; }
+
+  nav h3 {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin: 1.5rem 0 0.5rem;
+    font-weight: 500;
+  }
+
+  nav a {
+    display: block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.15s;
+    margin-bottom: 1px;
+  }
+
+  nav a:hover, nav a.active {
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+
+  main {
+    flex: 1;
+    max-width: 740px;
+    padding: 4rem 3rem 8rem;
+    margin: 0 auto;
+  }
+
+  /* ── Hero ── */
+  .hero { margin-bottom: 4rem; }
+  .hero .eyebrow {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-family: 'Lora', serif;
+    font-size: 2.6rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+  .hero p { color: var(--muted); max-width: 560px; font-size: 18px; }
+
+  /* ── Method card ── */
+  .method {
+    margin-bottom: 5rem;
+    scroll-margin-top: 2rem;
+  }
+
+  .method-header { margin-bottom: 2rem; }
+
+  .method-id {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .method-title {
+    font-family: 'Lora', serif;
+    font-size: 1.7rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tag-reg { background: var(--tag-reg-bg); color: var(--tag-reg); }
+  .tag-clf { background: var(--tag-clf-bg); color: var(--tag-clf); }
+  .tag-scale { background: #fef3c7; color: #92400e; }
+  .tag-iter { background: #f3e8ff; color: #6b21a8; }
+
+  .intro-text { color: #3d3b37; margin-bottom: 1.5rem; font-size: 16px; }
+
+  /* ── Steps ── */
+  .step { margin-bottom: 1.5rem; }
+
+  .step-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .step-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--text);
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .step-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .step-toggle {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    transition: transform 0.2s;
+  }
+
+  .step-toggle.open { transform: rotate(180deg); }
+
+  .step-body { display: none; }
+  .step-body.visible { display: block; }
+
+  .step-note {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+    padding-left: 36px;
+  }
+
+  /* ── Code ── */
+  .code-wrap {
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+    border: 1px solid #30363d;
+  }
+
+  .code-header {
+    background: #161b22;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #30363d;
+  }
+
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #8b949e;
+  }
+
+  .copy-btn {
+    background: none;
+    border: 1px solid #30363d;
+    color: #8b949e;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover { background: #21262d; color: #e6edf3; }
+  .copy-btn.copied { border-color: #3fb950; color: #3fb950; }
+
+  pre { margin: 0; }
+  pre code.hljs { padding: 1.25rem 1.5rem; font-size: 13px; font-family: 'JetBrains Mono', monospace; }
+
+  /* ── Metrics table ── */
+  .metrics {
+    background: var(--step-bg);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
+    font-size: 14px;
+  }
+
+  .metrics-title {
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .metric-row:last-child { border-bottom: none; }
+  .metric-key { color: var(--muted); }
+  .metric-val { font-family: 'JetBrains Mono', monospace; color: var(--text); }
+
+  /* ── Note callout ── */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-light);
+    padding: 0.75rem 1rem;
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+    color: #1e3a5f;
+    margin: 1rem 0;
+    line-height: 1.6;
+  }
+
+  .callout.warn {
+    border-color: #d97706;
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  /* ── Reveal button ── */
+  .reveal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--text);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.15s;
+    margin-top: 1.5rem;
+  }
+
+  .reveal-btn:hover { opacity: 0.85; }
+
+  .hidden-section { display: none; }
+  .hidden-section.shown { display: block; }
+
+  /* ── Divider ── */
+  .method-divider {
+    border: none;
+    border-top: 1px solid var(--divider);
+    margin: 4rem 0;
+  }
+
+  /* ── Progress bar ── */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--accent);
+    transition: width 0.1s;
+    z-index: 100;
+  }
+
+  /* ── Hyperparameter table ── */
+  .hparam-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 1rem 0;
+  }
+
+  .hparam-item {
+    background: var(--step-bg);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .hparam-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 2px;
+  }
+
+  .hparam-val { color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 900px) {
+    nav { display: none; }
+    main { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<div class="layout">
+
+<!-- ── Sidebar ── -->
+<nav>
+  <div class="logo">
+    ML Methods Guide
+    <span>Regression & Classification</span>
+  </div>
+
+  <h3>Regression</h3>
+  <a href="#reg01">REG 01 · Linear</a>
+  <a href="#reg02">REG 02 · Polynomial</a>
+  <a href="#reg03">REG 03 · Decision Tree</a>
+  <a href="#reg04">REG 04 · KNN</a>
+  <a href="#reg05">REG 05 · SVR</a>
+  <a href="#reg06">REG 06 · Random Forest</a>
+  <a href="#reg07">REG 07 · Gradient Boosting</a>
+  <a href="#reg08">REG 08 · MLP · ReLU</a>
+  <a href="#reg09">REG 09 · MLP · tanh</a>
+  <a href="#reg10">REG 10 · MLP · sigmoid</a>
+
+  <h3>Classification</h3>
+  <a href="#clf01">CLF 01 · Logistic</a>
+  <a href="#clf02">CLF 02 · Decision Tree</a>
+  <a href="#clf03">CLF 03 · KNN</a>
+  <a href="#clf04">CLF 04 · SVM</a>
+  <a href="#clf05">CLF 05 · Random Forest</a>
+  <a href="#clf06">CLF 06 · Gradient Boosting</a>
+  <a href="#clf07">CLF 07 · MLP · ReLU</a>
+  <a href="#clf08">CLF 08 · MLP · tanh</a>
+  <a href="#clf09">CLF 09 · MLP · sigmoid</a>
+  <a href="#clf10">CLF 10 · Naive Bayes</a>
+</nav>
+
+<!-- ── Main content ── -->
+<main>
+
+<div class="hero">
+  <p class="eyebrow">Machine Learning</p>
+  <h1>ML Methods from First Principles</h1>
+  <p>A progressive guide through every regression and classification model covered in class — explained step by step, with code you can copy directly into your notebook.</p>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- SHARED SETUP -->
+<!-- ════════════════════════════════════════ -->
+
+<div class="method" id="setup">
+  <div class="method-header">
+    <div class="method-id">Before you start</div>
+    <h2 class="method-title">Loading data & shared imports</h2>
+  </div>
+  <p class="intro-text">Every method in this guide starts from the same two lines. Fill them in once per section — the rest of the code stays the same.</p>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="step-title">Load your CSV and define X, y</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <p class="step-note">Use double brackets for X so sklearn always gets a 2D array.</p>
+      <div class="code-wrap">
+        <div class="code-header">
+          <span class="code-lang">python</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+        <pre><code class="language-python">import pandas as pd, numpy as np, matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+
+df = pd.read_csv("your_file.csv")
+X  = df[["input_column"]].values   # double brackets → 2D
+y  = df["target_column"].values
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Rule of thumb:</strong> For classification, make sure <code>y</code> is an integer array. Add <code>.astype(int)</code> when loading if needed.
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<!-- ════════════════════════════════════════ -->
+<!-- REG 01 -->
+<!-- ════════════════════════════════════════ -->
+
+<div class="method" id="reg01">
+  <div class="method-header">
+    <div class="method-id">REG 01</div>
+    <h2 class="method-title">Linear Regression</h2>
+    <div class="tags">
+      <span class="tag tag-reg">Regression</span>
+    </div>
+  </div>
+
+  <p class="intro-text">The simplest model: it fits a straight line <em>ŷ = m·X + b</em> by minimizing the sum of squared residuals. Exact in laminar flow (Hagen-Poiseuille), but fails where physics is nonlinear.</p>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="step-title">Train the model</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.linear_model import LinearRegression
+
+modelo = LinearRegression()
+modelo.fit(X_train, y_train)
+y_pred = modelo.predict(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">2</div>
+      <div class="step-title">Read the parameters</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <p class="step-note">The slope and intercept have direct physical meaning in experiments (e.g., h/e in the photoelectric effect).</p>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">pendiente  = modelo.coef_[0]      # slope m
+intercepto = modelo.intercept_   # intercept b
+print(f"y = {pendiente:.4f}·X + ({intercepto:.4f})")</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">3</div>
+      <div class="step-title">Evaluate</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.metrics import r2_score, mean_squared_error
+
+r2  = r2_score(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+print(f"R²={r2:.4f}  |  MSE={mse:.4f}")</code></pre>
+      </div>
+      <div class="metrics">
+        <div class="metrics-title">Outputs to check</div>
+        <div class="metric-row"><span class="metric-key">R²</span><span class="metric-val">1.0 = perfect, &lt;0.8 = poor for physics</span></div>
+        <div class="metric-row"><span class="metric-key">MSE</span><span class="metric-val">lower = better, units are y²</span></div>
+        <div class="metric-row"><span class="metric-key">slope</span><span class="metric-val">physical constant (e.g. h/e)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">4</div>
+      <div class="step-title">Plot</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">x_rng = np.linspace(X.min(), X.max(), 300).reshape(-1, 1)
+
+plt.figure(figsize=(8, 5))
+plt.scatter(X, y, color="steelblue", alpha=0.6, s=40, label="Data")
+plt.plot(x_rng, modelo.predict(x_rng), color="crimson", lw=2,
+         label=f"Linear (R²={r2:.3f})")
+plt.xlabel("X"); plt.ylabel("y"); plt.legend(); plt.grid(True, alpha=0.35)
+plt.show()</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<!-- REG 02 -->
+<div class="method" id="reg02">
+  <div class="method-header">
+    <div class="method-id">REG 02</div>
+    <h2 class="method-title">Polynomial Regression</h2>
+    <div class="tags">
+      <span class="tag tag-reg">Regression</span>
+    </div>
+  </div>
+  <p class="intro-text">Extends linear regression by adding powers of X as new features. Captures curves like the turbulent pressure drop (ΔP ∝ v¹·⁷⁵). Uses a Pipeline to apply the transformation before fitting.</p>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="step-title">Build the pipeline and search over degrees</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <p class="step-note">A Pipeline chains PolynomialFeatures → LinearRegression so you can call .fit() and .predict() on both at once.</p>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import r2_score, mean_squared_error
+
+mejorR2, mejor_modelo, mejor_grado = -np.inf, None, None
+for g in [2, 3, 4]:
+    pipe = Pipeline([
+        ("poly", PolynomialFeatures(degree=g, include_bias=False)),
+        ("lr",   LinearRegression())
+    ])
+    pipe.fit(X_train, y_train)
+    r2 = r2_score(y_test, pipe.predict(X_test))
+    print(f"  degree {g}: R²={r2:.4f}")
+    if r2 > mejorR2:
+        mejorR2, mejor_modelo, mejor_grado = r2, pipe, g
+
+y_pred = mejor_modelo.predict(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">2</div>
+      <div class="step-title">Why degree > 4 is dangerous</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="callout warn">High-degree polynomials memorize the training noise and oscillate wildly at the edges of the domain. This is called <strong>overfitting</strong>. Degree 2–3 is usually enough for physics curves.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<!-- REG 03 -->
+<div class="method" id="reg03">
+  <div class="method-header">
+    <div class="method-id">REG 03</div>
+    <h2 class="method-title">Decision Tree Regressor</h2>
+    <div class="tags"><span class="tag tag-reg">Regression</span></div>
+  </div>
+  <p class="intro-text">Splits the input space into rectangular regions and predicts the mean y in each. The result is a step function — sharp at regime boundaries but rough overall.</p>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="step-title">Search over depths</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.tree import DecisionTreeRegressor, plot_tree
+from sklearn.metrics import r2_score, mean_squared_error
+
+mejorR2, mejor_modelo, mejor_prof = -np.inf, None, None
+for d in [2, 4, 6, 8]:
+    m = DecisionTreeRegressor(max_depth=d, random_state=42)
+    m.fit(X_train, y_train)
+    r2 = r2_score(y_test, m.predict(X_test))
+    print(f"  depth={d}: R²={r2:.4f}")
+    if r2 > mejorR2:
+        mejorR2, mejor_modelo, mejor_prof = r2, m, d
+
+y_pred = mejor_modelo.predict(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">2</div>
+      <div class="step-title">Visualize the tree structure</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">fig, ax = plt.subplots(figsize=(12, 5))
+plot_tree(mejor_modelo, max_depth=3, filled=True, rounded=True, ax=ax)
+plt.show()</code></pre>
+      </div>
+      <div class="callout">Each node shows the split condition, the MSE of that region, and the predicted value. Deeper trees split into finer regions but risk memorizing noise.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<!-- REG 04 -->
+<div class="method" id="reg04">
+  <div class="method-header">
+    <div class="method-id">REG 04</div>
+    <h2 class="method-title">KNN Regressor</h2>
+    <div class="tags"><span class="tag tag-reg">Regression</span></div>
+  </div>
+  <p class="intro-text">For each query point, finds the k nearest neighbors in the training set and returns their mean. No training equation — all computation happens at prediction time.</p>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="step-title">Search over k</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.neighbors import KNeighborsRegressor
+
+mejorR2, mejor_modelo, mejor_k = -np.inf, None, None
+for k in [1, 3, 5, 7, 10, 15]:
+    m = KNeighborsRegressor(n_neighbors=k)
+    m.fit(X_train, y_train)
+    r2 = r2_score(y_test, m.predict(X_test))
+    print(f"  k={k:2d}: R²={r2:.4f}")
+    if r2 > mejorR2:
+        mejorR2, mejor_modelo, mejor_k = r2, m, k
+
+y_pred = mejor_modelo.predict(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metrics-title">Bias–variance tradeoff</div>
+    <div class="metric-row"><span class="metric-key">k=1</span><span class="metric-val">zero training error, high variance (overfits)</span></div>
+    <div class="metric-row"><span class="metric-key">k=large</span><span class="metric-val">over-smoothed, high bias (underfits)</span></div>
+    <div class="metric-row"><span class="metric-key">optimal k</span><span class="metric-val">lowest test MSE — find by search</span></div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<!-- REG 05 -->
+<div class="method" id="reg05">
+  <div class="method-header">
+    <div class="method-id">REG 05</div>
+    <h2 class="method-title">SVR — Support Vector Regressor</h2>
+    <div class="tags"><span class="tag tag-reg">Regression</span><span class="tag tag-scale">Requires scaling</span></div>
+  </div>
+  <p class="intro-text">Fits a "tube" of width 2ε around the data; only points outside the tube contribute to the loss. Robust to outliers. The kernel determines the shape of the fit.</p>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="step-title">Scale first, then search over kernels</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="callout warn">SVR without StandardScaler almost always fails. Always put the scaler inside a Pipeline.</div>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.svm import SVR
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+colores_k = {"linear": "crimson", "poly": "darkorange", "rbf": "forestgreen"}
+mejorR2, mejor_modelo, mejor_kernel = -np.inf, None, None
+
+for k in ["linear", "poly", "rbf"]:
+    pipe = Pipeline([
+        ("scaler", StandardScaler()),
+        ("svr",    SVR(kernel=k, C=1000, epsilon=0.1))
+    ])
+    pipe.fit(X_train, y_train)
+    r2 = r2_score(y_test, pipe.predict(X_test))
+    print(f"  kernel={k}: R²={r2:.4f}")
+    if r2 > mejorR2:
+        mejorR2, mejor_modelo, mejor_kernel = r2, pipe, k
+
+y_pred = mejor_modelo.predict(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="hparam-grid">
+    <div class="hparam-item"><div class="hparam-key">kernel="linear"</div><div class="hparam-val">straight line, like linear regression but with a margin</div></div>
+    <div class="hparam-item"><div class="hparam-key">kernel="poly"</div><div class="hparam-val">polynomial surface</div></div>
+    <div class="hparam-item"><div class="hparam-key">kernel="rbf"</div><div class="hparam-val">radial basis — most flexible, usually best</div></div>
+    <div class="hparam-item"><div class="hparam-key">C=1000</div><div class="hparam-val">penalty for points outside the tube — larger C = tighter fit</div></div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<!-- REG 06 -->
+<div class="method" id="reg06">
+  <div class="method-header">
+    <div class="method-id">REG 06</div>
+    <h2 class="method-title">Random Forest Regressor</h2>
+    <div class="tags"><span class="tag tag-reg">Regression</span></div>
+  </div>
+  <p class="intro-text">Trains hundreds of decision trees on random subsets of the data and averages their predictions. The averaging dramatically reduces variance compared to a single tree.</p>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="step-title">Search over number of trees</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.ensemble import RandomForestRegressor
+
+mejorR2, mejor_modelo, mejor_n = -np.inf, None, None
+for n in [10, 50, 100, 200]:
+    m = RandomForestRegressor(n_estimators=n, random_state=42)
+    m.fit(X_train, y_train)
+    r2 = r2_score(y_test, m.predict(X_test))
+    print(f"  n={n}: R²={r2:.4f}")
+    if r2 > mejorR2:
+        mejorR2, mejor_modelo, mejor_n = r2, m, n
+
+y_pred = mejor_modelo.predict(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">2</div>
+      <div class="step-title">Visualize uncertainty with ±1σ band</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <p class="step-note">The standard deviation across individual tree predictions is an informal uncertainty estimate.</p>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">x_rng   = np.linspace(X.min(), X.max(), 300).reshape(-1, 1)
+y_rng   = mejor_modelo.predict(x_rng)
+std_rng = np.array([t.predict(x_rng)
+                    for t in mejor_modelo.estimators_]).std(axis=0)
+
+plt.figure(figsize=(8, 5))
+plt.scatter(X, y, color="steelblue", alpha=0.5, s=30)
+plt.plot(x_rng, y_rng, color="saddlebrown", lw=2)
+plt.fill_between(x_rng.ravel(), y_rng - std_rng, y_rng + std_rng,
+                 alpha=0.2, color="saddlebrown", label="±1σ")
+plt.legend(); plt.show()</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<!-- REG 07 -->
+<div class="method" id="reg07">
+  <div class="method-header">
+    <div class="method-id">REG 07</div>
+    <h2 class="method-title">Gradient Boosting Regressor</h2>
+    <div class="tags"><span class="tag tag-reg">Regression</span></div>
+  </div>
+  <p class="intro-text">Builds trees sequentially — each new tree corrects the residual of the previous ones. Unlike Random Forest (parallel), this is sequential and sensitive to learning rate.</p>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="step-title">Search over learning rates</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.ensemble import GradientBoostingRegressor
+
+mejorR2, mejor_modelo, mejor_lr = -np.inf, None, None
+for lr in [0.01, 0.05, 0.1, 0.2]:
+    m = GradientBoostingRegressor(n_estimators=200, learning_rate=lr,
+                                   max_depth=3, random_state=42)
+    m.fit(X_train, y_train)
+    r2 = r2_score(y_test, m.predict(X_test))
+    print(f"  lr={lr}: R²={r2:.4f}")
+    if r2 > mejorR2:
+        mejorR2, mejor_modelo, mejor_lr = r2, m, lr
+
+y_pred = mejor_modelo.predict(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">2</div>
+      <div class="step-title">Plot the learning curve to detect overfitting</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.metrics import mean_squared_error
+
+train_err = [mean_squared_error(y_train, yp)
+             for yp in mejor_modelo.staged_predict(X_train)]
+test_err  = [mean_squared_error(y_test,  yp)
+             for yp in mejor_modelo.staged_predict(X_test)]
+
+plt.figure(figsize=(7, 4))
+plt.plot(train_err, label="train MSE", color="royalblue")
+plt.plot(test_err,  label="test MSE",  color="crimson")
+plt.xlabel("iteration"); plt.ylabel("MSE")
+plt.legend(); plt.grid(True, alpha=0.35); plt.show()</code></pre>
+      </div>
+      <div class="callout">If test MSE rises while train MSE keeps falling → overfitting. Reduce <code>n_estimators</code> or lower <code>learning_rate</code>.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<!-- REG 08-10 -->
+<div class="method" id="reg08">
+  <div class="method-header">
+    <div class="method-id">REG 08 · 09 · 10</div>
+    <h2 class="method-title">MLP Regressor — ReLU / tanh / sigmoid</h2>
+    <div class="tags"><span class="tag tag-reg">Regression</span><span class="tag tag-scale">Requires scaling</span><span class="tag tag-iter">Iterative</span></div>
+  </div>
+  <p class="intro-text">A multi-layer perceptron learns a nonlinear mapping by stacking layers of neurons with an activation function. The only thing that changes between REG 08, 09, and 10 is the activation.</p>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="step-title">Train with architecture search</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.neural_network import MLPRegressor
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+
+# Change "relu" → "tanh" → "logistic" for REG09 / REG10
+ACTIVATION = "relu"
+
+mejorR2, mejor_modelo, mejor_arq = -np.inf, None, None
+for arq in [(32,), (64, 32), (128, 64, 32)]:
+    pipe = Pipeline([
+        ("scaler", StandardScaler()),
+        ("mlp",    MLPRegressor(hidden_layer_sizes=arq,
+                                activation=ACTIVATION,
+                                max_iter=2000, random_state=42))
+    ])
+    pipe.fit(X_train, y_train)
+    r2 = r2_score(y_test, pipe.predict(X_test))
+    print(f"  {arq}: R²={r2:.4f}")
+    if r2 > mejorR2:
+        mejorR2, mejor_modelo, mejor_arq = r2, pipe, arq
+
+y_pred = mejor_modelo.predict(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">2</div>
+      <div class="step-title">Plot the loss curve</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">mlp = mejor_modelo.named_steps["mlp"]
+plt.figure(figsize=(7, 4))
+plt.plot(mlp.loss_curve_, color="tomato", lw=1.8)
+plt.xlabel("Epoch"); plt.ylabel("Loss")
+plt.title(f"MLP {ACTIVATION} — training loss")
+plt.grid(True, alpha=0.35); plt.show()</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="hparam-grid">
+    <div class="hparam-item"><div class="hparam-key">relu</div><div class="hparam-val">Fast, avoids vanishing gradient. Default for most problems.</div></div>
+    <div class="hparam-item"><div class="hparam-key">tanh</div><div class="hparam-val">Symmetric around 0, smoother transitions, may help with centered data.</div></div>
+    <div class="hparam-item"><div class="hparam-key">logistic (sigmoid)</div><div class="hparam-val">Oldest. Saturates easily, slowest to train. Rarely best.</div></div>
+    <div class="hparam-item"><div class="hparam-key">coefs_, intercepts_</div><div class="hparam-val">Access weights with <code>mlp.coefs_</code> and <code>mlp.intercepts_</code>.</div></div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<!-- ════════════════════════════════════════ -->
+<!-- CLASSIFICATION SECTION HEADER -->
+<!-- ════════════════════════════════════════ -->
+
+<div style="margin-bottom:3rem;">
+  <p class="eyebrow">Part 2</p>
+  <h2 style="font-family:'Lora',serif;font-size:2rem;font-weight:600;margin-bottom:1rem;">Classification methods</h2>
+  <p style="color:var(--muted);font-size:16px;">Same structure as regression, but the target <code>y</code> is a discrete class label (0 or 1). Metrics change to <strong>accuracy</strong> and <strong>cross-entropy (log loss)</strong>.</p>
+</div>
+
+<div class="callout" style="margin-bottom:3rem;">
+  <strong>Shared metrics for all classifiers:</strong>
+  <div style="margin-top:0.5rem;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:2;">
+    from sklearn.metrics import accuracy_score, log_loss<br>
+    accuracy = accuracy_score(y_test, y_pred)<br>
+    loss     = log_loss(y_test, modelo.predict_proba(X_test))
+  </div>
+</div>
+
+<!-- CLF 01 -->
+<div class="method" id="clf01">
+  <div class="method-header">
+    <div class="method-id">CLF 01</div>
+    <h2 class="method-title">Logistic Regression</h2>
+    <div class="tags"><span class="tag tag-clf">Classification</span></div>
+  </div>
+  <p class="intro-text">Fits a sigmoid curve P(class=1|X) = σ(w·X + b). The decision boundary is the point where P = 0.5, which simplifies analytically to X = −b/w for a single feature.</p>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div>
+      <div class="step-title">Train and get the decision boundary</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, log_loss
+
+modelo = LogisticRegression()
+modelo.fit(X_train, y_train)
+y_pred  = modelo.predict(X_test)
+y_proba = modelo.predict_proba(X_test)
+
+print(f"Accuracy      = {accuracy_score(y_test, y_pred):.4f}")
+print(f"Cross-entropy = {log_loss(y_test, y_proba):.4f}")
+
+# Analytic boundary (single feature only)
+w, b = modelo.coef_[0][0], modelo.intercept_[0]
+x_critico = -b / w
+print(f"Decision boundary: X = {x_critico:.4f}")</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">2</div>
+      <div class="step-title">Plot probability curve + boundary</div>
+      <div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">x_rng = np.linspace(X.min()-0.01, X.max()+0.01, 400).reshape(-1,1)
+proba = modelo.predict_proba(x_rng)[:,1]
+# detect all crossing points (for non-monotonic cases)
+cambios   = np.where(np.diff(modelo.predict(x_rng)))[0]
+fronteras = [x_rng[i,0] for i in cambios]
+
+mask_0 = y.ravel() == 0
+mask_1 = y.ravel() == 1
+
+plt.figure(figsize=(13,5))
+
+plt.subplot(1, 2, 1)
+plt.scatter(X[mask_0], y_scatter[mask_0], alpha=0.7, s=45, label="Class 0")
+plt.scatter(X[mask_1], y_scatter[mask_1], alpha=0.7, s=45, label="Class 1", c="orange")
+plt.xlabel("X"); plt.legend(); plt.grid(True, alpha=0.35)
+
+plt.subplot(1, 2, 2)
+plt.plot(x_rng, proba, color="purple", lw=2.5, label="P(class=1|X)")
+for f in fronteras:
+    plt.axvline(f, color="black", ls="--", lw=1.5, label=f"Boundary ≈ {f:.3f}")
+plt.axhline(0.5, color="gray", ls=":", lw=1)
+plt.fill_between(x_rng.ravel(), proba, 0.5,
+                 where=(proba>=0.5), alpha=0.12, color="orangered")
+plt.fill_between(x_rng.ravel(), proba, 0.5,
+                 where=(proba<0.5), alpha=0.12, color="steelblue")
+plt.ylim(-0.05, 1.05); plt.legend(fontsize=9); plt.grid(True, alpha=0.35)
+plt.tight_layout(); plt.show()</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout warn"><strong>Non-monotonic data (e.g. magnetic saturation):</strong> If class 1 appears at both extremes of X, use <code>X = np.abs(df[["H"]].values)</code> to train, but evaluate with <code>proba = modelo.predict_proba(np.abs(x_rng))[:,1]</code> while keeping <code>x_rng</code> in the original domain.</div>
+</div>
+
+<hr class="method-divider">
+
+<!-- CLF 02-10 compact -->
+<div class="method" id="clf02">
+  <div class="method-header">
+    <div class="method-id">CLF 02</div>
+    <h2 class="method-title">Decision Tree Classifier</h2>
+    <div class="tags"><span class="tag tag-clf">Classification</span></div>
+  </div>
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div><div class="step-title">Search over depths</div><div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.tree import DecisionTreeClassifier
+
+mejorAcc, mejor_modelo, mejor_prof = -np.inf, None, None
+for d in [2, 4, 6, 8]:
+    m = DecisionTreeClassifier(max_depth=d, random_state=42)
+    m.fit(X_train, y_train)
+    acc = accuracy_score(y_test, m.predict(X_test))
+    loss = log_loss(y_test, m.predict_proba(X_test))
+    print(f"  depth={d}: acc={acc:.4f} | loss={loss:.4f}")
+    if acc > mejorAcc:
+        mejorAcc, mejor_modelo, mejor_prof = acc, m, d
+
+y_pred  = mejor_modelo.predict(X_test)
+y_proba = mejor_modelo.predict_proba(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<div class="method" id="clf03">
+  <div class="method-header">
+    <div class="method-id">CLF 03</div>
+    <h2 class="method-title">KNN Classifier</h2>
+    <div class="tags"><span class="tag tag-clf">Classification</span></div>
+  </div>
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div><div class="step-title">Search over k</div><div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.neighbors import KNeighborsClassifier
+
+mejorAcc, mejor_modelo, mejor_k = -np.inf, None, None
+for k in [1, 3, 5, 7, 10, 15]:
+    m = KNeighborsClassifier(n_neighbors=k)
+    m.fit(X_train, y_train)
+    acc = accuracy_score(y_test, m.predict(X_test))
+    if acc > mejorAcc:
+        mejorAcc, mejor_modelo, mejor_k = acc, m, k
+
+y_pred  = mejor_modelo.predict(X_test)
+y_proba = mejor_modelo.predict_proba(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+  <p class="intro-text" style="margin-top:1rem;">The probability curve will be <em>stepped</em> (not smooth) because KNN returns vote fractions, not a continuous function.</p>
+</div>
+
+<hr class="method-divider">
+
+<div class="method" id="clf04">
+  <div class="method-header">
+    <div class="method-id">CLF 04</div>
+    <h2 class="method-title">SVM Classifier</h2>
+    <div class="tags"><span class="tag tag-clf">Classification</span><span class="tag tag-scale">Requires scaling</span></div>
+  </div>
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div><div class="step-title">Search over kernels</div><div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="callout warn">Always use <code>probability=True</code> to enable <code>predict_proba()</code>, and always wrap in a Pipeline with StandardScaler.</div>
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.svm import SVC
+
+mejorAcc, mejor_modelo, mejor_kernel = -np.inf, None, None
+for k in ["linear", "poly", "rbf"]:
+    pipe = Pipeline([
+        ("scaler", StandardScaler()),
+        ("svc",    SVC(kernel=k, C=10, probability=True, random_state=42))
+    ])
+    pipe.fit(X_train, y_train)
+    acc = accuracy_score(y_test, pipe.predict(X_test))
+    if acc > mejorAcc:
+        mejorAcc, mejor_modelo, mejor_kernel = acc, pipe, k
+
+y_pred  = mejor_modelo.predict(X_test)
+y_proba = mejor_modelo.predict_proba(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<div class="method" id="clf05">
+  <div class="method-header">
+    <div class="method-id">CLF 05</div>
+    <h2 class="method-title">Random Forest Classifier</h2>
+    <div class="tags"><span class="tag tag-clf">Classification</span></div>
+  </div>
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div><div class="step-title">Search over n_estimators</div><div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.ensemble import RandomForestClassifier
+
+mejorAcc, mejor_modelo, mejor_n = -np.inf, None, None
+for n in [10, 50, 100, 200]:
+    m = RandomForestClassifier(n_estimators=n, random_state=42)
+    m.fit(X_train, y_train)
+    acc = accuracy_score(y_test, m.predict(X_test))
+    if acc > mejorAcc:
+        mejorAcc, mejor_modelo, mejor_n = acc, m, n
+
+y_pred  = mejor_modelo.predict(X_test)
+y_proba = mejor_modelo.predict_proba(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<div class="method" id="clf06">
+  <div class="method-header">
+    <div class="method-id">CLF 06</div>
+    <h2 class="method-title">Gradient Boosting Classifier</h2>
+    <div class="tags"><span class="tag tag-clf">Classification</span></div>
+  </div>
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div><div class="step-title">Search over learning rates</div><div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.ensemble import GradientBoostingClassifier
+
+mejorAcc, mejor_modelo, mejor_lr = -np.inf, None, None
+for lr in [0.01, 0.05, 0.1, 0.2]:
+    m = GradientBoostingClassifier(n_estimators=200, learning_rate=lr,
+                                    max_depth=3, random_state=42)
+    m.fit(X_train, y_train)
+    acc = accuracy_score(y_test, m.predict(X_test))
+    if acc > mejorAcc:
+        mejorAcc, mejor_modelo, mejor_lr = acc, m, lr
+
+y_pred  = mejor_modelo.predict(X_test)
+y_proba = mejor_modelo.predict_proba(X_test)</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<div class="method" id="clf07">
+  <div class="method-header">
+    <div class="method-id">CLF 07 · 08 · 09</div>
+    <h2 class="method-title">MLP Classifier — ReLU / tanh / sigmoid</h2>
+    <div class="tags"><span class="tag tag-clf">Classification</span><span class="tag tag-scale">Requires scaling</span><span class="tag tag-iter">Iterative</span></div>
+  </div>
+  <p class="intro-text">Same structure as the MLP regressor. Change <code>ACTIVATION</code> to switch between REG 07, 08, 09.</p>
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div><div class="step-title">Architecture search</div><div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.neural_network import MLPClassifier
+
+ACTIVATION = "relu"   # → "tanh" → "logistic"
+
+mejorAcc, mejor_modelo, mejor_arq = -np.inf, None, None
+for arq in [(32,), (64, 32), (128, 64, 32)]:
+    pipe = Pipeline([
+        ("scaler", StandardScaler()),
+        ("mlp",    MLPClassifier(hidden_layer_sizes=arq,
+                                  activation=ACTIVATION,
+                                  max_iter=2000, random_state=42))
+    ])
+    pipe.fit(X_train, y_train)
+    acc = accuracy_score(y_test, pipe.predict(X_test))
+    if acc > mejorAcc:
+        mejorAcc, mejor_modelo, mejor_arq = acc, pipe, arq
+
+y_pred  = mejor_modelo.predict(X_test)
+y_proba = mejor_modelo.predict_proba(X_test)
+
+# Internal weights
+mlp        = mejor_modelo.named_steps["mlp"]
+coefs      = mlp.coefs_
+intercepts = mlp.intercepts_
+n_iter     = mlp.n_iter_</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<div class="method" id="clf10">
+  <div class="method-header">
+    <div class="method-id">CLF 10</div>
+    <h2 class="method-title">Naive Bayes (Gaussian)</h2>
+    <div class="tags"><span class="tag tag-clf">Classification</span></div>
+  </div>
+  <p class="intro-text">Assumes P(X|class) follows a Gaussian distribution. Learns a mean μ and variance σ² per class. The simplest probabilistic classifier — no hyperparameters to tune.</p>
+
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div><div class="step-title">Train and inspect learned distributions</div><div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.naive_bayes import GaussianNB
+
+modelo = GaussianNB()
+modelo.fit(X_train, y_train)
+y_pred  = modelo.predict(X_test)
+y_proba = modelo.predict_proba(X_test)
+
+print(f"Accuracy      = {accuracy_score(y_test, y_pred):.4f}")
+print(f"Cross-entropy = {log_loss(y_test, y_proba):.4f}")
+
+for i, clase in enumerate(modelo.classes_):
+    print(f"Class {int(clase)}: μ={modelo.theta_[i,0]:.4f} | σ²={modelo.var_[i,0]:.6f}")</code></pre>
+      </div>
+      <div class="callout">The μ values tell you the typical X for each class. Physically meaningful: in the pipe flow experiment, μ₀ = mean laminar velocity, μ₁ = mean turbulent velocity.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="method-divider">
+
+<!-- Confusion matrix -->
+<div class="method" id="confmat">
+  <div class="method-header">
+    <div class="method-id">Bonus</div>
+    <h2 class="method-title">Confusion matrix</h2>
+  </div>
+  <p class="intro-text">Works with any classifier. Run it after computing <code>y_pred</code>.</p>
+  <div class="step">
+    <div class="step-label" onclick="toggleStep(this)">
+      <div class="step-num">1</div><div class="step-title">Plot</div><div class="step-toggle">▼</div>
+    </div>
+    <div class="step-body visible">
+      <div class="code-wrap">
+        <div class="code-header"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">copy</button></div>
+        <pre><code class="language-python">from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(5, 4))
+ConfusionMatrixDisplay(cm, display_labels=["Class 0","Class 1"]).plot(
+    cmap="Blues", ax=plt.gca())
+plt.title("Confusion matrix"); plt.show()
+
+tn, fp, fn, tp = cm.ravel()
+print(f"True negatives  : {tn}")
+print(f"False positives : {fp}")
+print(f"False negatives : {fn}")
+print(f"True positives  : {tp}")</code></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+hljs.highlightAll();
+
+function toggleStep(label) {
+  const body = label.nextElementSibling;
+  const toggle = label.querySelector('.step-toggle');
+  body.classList.toggle('visible');
+  toggle.classList.toggle('open');
+}
+
+function copyCode(btn) {
+  const code = btn.closest('.code-wrap').querySelector('code');
+  navigator.clipboard.writeText(code.innerText).then(() => {
+    btn.textContent = 'copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const progress = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+  document.getElementById('progress').style.width = progress + '%';
+
+  document.querySelectorAll('nav a').forEach(a => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (!target) return;
+    const rect = target.getBoundingClientRect();
+    a.classList.toggle('active', rect.top <= 80 && rect.bottom >= 80);
+  });
+});
+</script>
+</body>
+</html>
